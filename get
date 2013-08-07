@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+require 'json'
+
+kvs = File.expand_path('~/.kvs')
+keys = JSON.parse(IO.read(kvs)).inject({}) {|j,(k,v)| j[k] = v; j}
+
+ARGV.each do |key|
+  puts keys[key]
+end

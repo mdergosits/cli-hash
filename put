@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+require 'json'
+require 'fileutils'
+
+kvs = File.expand_path("~/.kvs")
+FileUtils.touch(kvs) if !File.exist?(kvs)
+
+keys_text = IO.read(kvs.to_s)
+keys_text = "{}" if (keys_text == "")
+keys = JSON.parse(keys_text).inject({}) {|j,(k,v)| j[k] = v; j}
+
+if (ARGV.size == 1)
+  if (ARGV[0] == "-c" || ARGV[0] == "--clear")
+    File.open(kvs, 'w') { |file| file.write("{}") }
+    exit 0
+  end
+end
+
+temp = Hash[*ARGV]
+keys = keys.merge(temp)
+
+File.open(kvs, 'w') { |file| file.write(keys.to_json) }
